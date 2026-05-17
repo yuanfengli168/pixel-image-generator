@@ -9,15 +9,13 @@
 
   :root {
     --bg: #0a0a1a;
-    --panel: #12122a;
+    --panel: #10102a;
     --border: #3a3aff;
     --accent: #ff2d78;
     --accent2: #00ffcc;
     --text: #e0e0ff;
-    --dim: #6060aa;
-    --btn-bg: #1e1e4a;
-    --btn-hover: #3a3aff;
-    --shadow: 0 0 10px #3a3aff88;
+    --dim: #5555aa;
+    --btn-bg: #1a1a3a;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -30,66 +28,85 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 24px 16px 48px;
+    padding: 32px 16px 60px;
     background-image:
-      linear-gradient(rgba(58,58,255,0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(58,58,255,0.05) 1px, transparent 1px);
+      linear-gradient(rgba(58,58,255,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(58,58,255,0.06) 1px, transparent 1px);
     background-size: 32px 32px;
+  }
+
+  /* Scanlines */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent, transparent 2px,
+      rgba(0,0,0,0.13) 2px, rgba(0,0,0,0.13) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
   }
 
   header {
     text-align: center;
-    margin-bottom: 32px;
-    animation: flicker 3s infinite;
+    margin-bottom: 36px;
   }
 
   header h1 {
-    font-size: clamp(14px, 3vw, 22px);
+    font-size: clamp(13px, 2.8vw, 20px);
     color: var(--accent2);
-    text-shadow: 0 0 10px var(--accent2), 0 0 20px var(--accent2);
+    text-shadow: 0 0 8px var(--accent2), 0 0 24px var(--accent2);
+    line-height: 1.7;
     letter-spacing: 2px;
-    line-height: 1.6;
+    animation: flicker 5s infinite;
   }
 
   header p {
-    font-size: 8px;
+    margin-top: 12px;
+    font-size: 7px;
     color: var(--dim);
-    margin-top: 10px;
     letter-spacing: 1px;
   }
 
   @keyframes flicker {
-    0%, 95%, 100% { opacity: 1; }
-    96% { opacity: 0.7; }
-    97% { opacity: 1; }
-    98% { opacity: 0.5; }
-    99% { opacity: 1; }
+    0%,93%,100% { opacity:1; }
+    94% { opacity:.6; }
+    96% { opacity:1; }
+    98% { opacity:.5; }
   }
 
   .card {
+    width: 100%;
+    max-width: 680px;
     background: var(--panel);
     border: 2px solid var(--border);
-    box-shadow: var(--shadow), inset 0 0 30px rgba(58,58,255,0.05);
-    border-radius: 0;
-    width: 100%;
-    max-width: 700px;
-    padding: 28px 24px;
+    box-shadow: 0 0 16px rgba(58,58,255,.4), inset 0 0 32px rgba(58,58,255,.04);
+    padding: 28px 24px 24px;
     position: relative;
   }
 
   .card::before {
-    content: '■ PIXEL GEN v1.0';
+    content: '■ PIXEL GEN v2.0 ■';
     position: absolute;
-    top: -11px;
-    left: 16px;
+    top: -11px; left: 20px;
     background: var(--panel);
     padding: 0 8px;
-    font-size: 8px;
+    font-size: 7px;
     color: var(--border);
     letter-spacing: 1px;
   }
 
-  label {
+  .card::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; right: -2px;
+    width: 14px; height: 14px;
+    background: var(--accent);
+  }
+
+  .field-label {
     display: block;
     font-size: 8px;
     color: var(--accent2);
@@ -99,17 +116,17 @@
 
   textarea {
     width: 100%;
-    background: #080820;
+    height: 88px;
+    background: #06060f;
     border: 2px solid var(--border);
     color: var(--text);
     font-family: 'Press Start 2P', monospace;
-    font-size: 9px;
+    font-size: 8px;
     padding: 12px;
     resize: none;
-    height: 80px;
     outline: none;
-    line-height: 1.8;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    line-height: 1.9;
+    transition: border-color .2s, box-shadow .2s;
   }
 
   textarea:focus {
@@ -117,335 +134,379 @@
     box-shadow: 0 0 8px var(--accent2);
   }
 
+  textarea::placeholder { color: var(--dim); }
+
+  .char-row {
+    display: flex;
+    justify-content: flex-end;
+    margin: 5px 0 22px;
+  }
+
   .char-count {
     font-size: 7px;
     color: var(--dim);
-    text-align: right;
-    margin-top: 4px;
-    margin-bottom: 20px;
+    transition: color .2s;
   }
 
-  .char-count.warn { color: var(--accent); }
+  .char-count.warn { color: var(--accent); text-shadow: 0 0 6px var(--accent); }
 
-  .style-row {
-    display: flex;
+  /* Style selector */
+  .style-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 10px;
-    flex-wrap: wrap;
     margin-bottom: 24px;
   }
 
   .style-btn {
-    flex: 1;
-    min-width: 120px;
     background: var(--btn-bg);
     border: 2px solid var(--border);
     color: var(--dim);
     font-family: 'Press Start 2P', monospace;
-    font-size: 8px;
-    padding: 10px 6px;
+    font-size: 7px;
+    padding: 12px 6px 10px;
     cursor: pointer;
     text-align: center;
-    transition: all 0.15s;
-    line-height: 1.8;
-    letter-spacing: 0.5px;
+    line-height: 2;
+    letter-spacing: .5px;
+    transition: all .15s;
+    user-select: none;
   }
+
+  .style-btn .icon { display: block; font-size: 20px; margin-bottom: 6px; }
+  .style-btn .name { display: block; color: inherit; }
+  .style-btn .sub  { display: block; font-size: 6px; color: var(--dim); margin-top: 4px; opacity: .7; }
 
   .style-btn:hover {
     border-color: var(--accent2);
     color: var(--accent2);
-    box-shadow: 0 0 8px var(--accent2);
+    box-shadow: 0 0 8px rgba(0,255,204,.4);
   }
 
   .style-btn.active {
-    background: var(--border);
     border-color: var(--accent2);
+    background: rgba(0,255,204,.1);
     color: #fff;
-    box-shadow: 0 0 12px var(--accent2);
+    box-shadow: 0 0 12px rgba(0,255,204,.5);
   }
 
-  .style-btn .icon { display: block; font-size: 18px; margin-bottom: 6px; }
-  .style-btn .tag  { display: block; font-size: 7px; color: inherit; margin-top: 4px; opacity: 0.7; }
+  .style-btn.active .sub { color: var(--accent2); opacity: 1; }
 
-  .generate-btn {
+  /* Generate button */
+  .gen-btn {
     width: 100%;
     background: var(--accent);
     border: 2px solid #ff6aaa;
     color: #fff;
     font-family: 'Press Start 2P', monospace;
     font-size: 11px;
+    letter-spacing: 2px;
     padding: 14px;
     cursor: pointer;
-    letter-spacing: 2px;
     text-transform: uppercase;
-    transition: all 0.15s;
-    box-shadow: 0 4px 0 #990044, 0 0 12px var(--accent);
     position: relative;
+    top: 0;
+    box-shadow: 0 4px 0 #880033, 0 0 14px var(--accent);
+    transition: all .12s;
+  }
+
+  .gen-btn:hover:not(:disabled) {
+    top: -2px;
+    box-shadow: 0 6px 0 #880033, 0 0 24px var(--accent);
+  }
+
+  .gen-btn:active:not(:disabled) {
+    top: 4px;
+    box-shadow: 0 0 0 #880033, 0 0 8px var(--accent);
+  }
+
+  .gen-btn:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+    box-shadow: none;
     top: 0;
   }
 
-  .generate-btn:hover:not(:disabled) {
-    background: #ff5599;
-    box-shadow: 0 4px 0 #990044, 0 0 24px var(--accent);
-    top: -2px;
-  }
-
-  .generate-btn:active:not(:disabled) {
-    top: 4px;
-    box-shadow: 0 0 0 #990044, 0 0 12px var(--accent);
-  }
-
-  .generate-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    box-shadow: none;
-  }
-
-  .output-area {
+  /* Output */
+  .output {
     margin-top: 28px;
-    min-height: 80px;
   }
 
-  .status {
+  .status-msg {
     font-size: 8px;
     text-align: center;
-    padding: 16px;
+    padding: 20px 8px;
+    line-height: 2.2;
     color: var(--dim);
     letter-spacing: 1px;
-    line-height: 2;
   }
 
-  .status.loading { color: var(--accent2); animation: blink 0.8s step-end infinite; }
-  .status.error   { color: var(--accent); }
-
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
+  .status-msg.loading {
+    color: var(--accent2);
   }
 
-  .img-wrapper {
-    position: relative;
+  .status-msg.error {
+    color: var(--accent);
+  }
+
+  .loading-bar {
+    width: 100%;
+    height: 8px;
+    background: #06060f;
     border: 2px solid var(--border);
-    box-shadow: var(--shadow);
-    image-rendering: pixelated;
-    background: #050510;
+    margin-top: 12px;
     overflow: hidden;
+    display: none;
   }
 
-  .img-wrapper img {
+  .loading-bar.visible { display: block; }
+
+  .loading-bar-inner {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--border), var(--accent2));
+    box-shadow: 0 0 8px var(--accent2);
+    animation: loadprogress 15s linear forwards;
+  }
+
+  @keyframes loadprogress {
+    0%   { width: 0%; }
+    80%  { width: 88%; }
+    100% { width: 95%; }
+  }
+
+  .img-frame {
+    border: 2px solid var(--border);
+    box-shadow: 0 0 16px rgba(58,58,255,.4);
+    background: #06060f;
+    overflow: hidden;
+    image-rendering: pixelated;
+  }
+
+  .img-frame img {
     display: block;
     width: 100%;
     image-rendering: pixelated;
     image-rendering: crisp-edges;
   }
 
-  .img-toolbar {
-    display: flex;
+  .img-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 8px;
     margin-top: 10px;
-    flex-wrap: wrap;
   }
 
-  .img-toolbar a, .img-toolbar button {
-    flex: 1;
+  .img-actions button {
     background: var(--btn-bg);
     border: 2px solid var(--border);
     color: var(--text);
     font-family: 'Press Start 2P', monospace;
     font-size: 7px;
-    padding: 8px 4px;
-    text-align: center;
+    padding: 10px 6px;
     cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    transition: all 0.15s;
-    letter-spacing: 0.5px;
+    text-align: center;
+    letter-spacing: .5px;
+    transition: all .15s;
   }
 
-  .img-toolbar a:hover, .img-toolbar button:hover {
+  .img-actions button:hover {
     border-color: var(--accent2);
     color: var(--accent2);
-    box-shadow: 0 0 8px var(--accent2);
+    box-shadow: 0 0 8px rgba(0,255,204,.4);
   }
 
-  .prompt-used {
+  .prompt-info {
+    margin-top: 10px;
     font-size: 7px;
     color: var(--dim);
-    margin-top: 10px;
-    line-height: 2;
+    line-height: 2.2;
     word-break: break-word;
   }
 
-  .prompt-used span { color: var(--accent2); }
+  .prompt-info span { color: var(--accent2); }
 
   footer {
-    margin-top: 40px;
+    margin-top: 44px;
     font-size: 7px;
     color: var(--dim);
     text-align: center;
-    line-height: 2.5;
+    line-height: 3;
+    letter-spacing: .5px;
   }
 
   footer a { color: var(--border); text-decoration: none; }
   footer a:hover { color: var(--accent2); }
-
-  /* Scanline overlay */
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0,0,0,0.12) 2px,
-      rgba(0,0,0,0.12) 4px
-    );
-    pointer-events: none;
-    z-index: 999;
-  }
-
-  /* Pixel corners */
-  .card::after {
-    content: '';
-    position: absolute;
-    bottom: -2px; right: -2px;
-    width: 12px; height: 12px;
-    background: var(--accent);
-  }
 </style>
 </head>
 <body>
 
 <header>
   <h1>🎮 PIXEL STYLE<br>IMAGE GENERATOR</h1>
-  <p>▶ POWERED BY POLLINATIONS.AI ◀</p>
+  <p>▶ AI-POWERED · FREE · NO LOGIN REQUIRED ◀</p>
 </header>
 
 <div class="card">
-  <label for="prompt">▸ ENTER YOUR PROMPT</label>
-  <textarea id="prompt" maxlength="200" placeholder="a dragon guarding a treasure chest in a dungeon..."></textarea>
-  <div class="char-count" id="charCount">0 / 200</div>
+  <label class="field-label" for="prompt">▸ DESCRIBE YOUR IMAGE</label>
+  <textarea
+    id="prompt"
+    maxlength="200"
+    placeholder="a knight fighting a dragon on top of a volcano..."
+  ></textarea>
+  <div class="char-row">
+    <span class="char-count" id="charCount">0 / 200</span>
+  </div>
 
-  <label>▸ SELECT STYLE</label>
-  <div class="style-row">
+  <label class="field-label">▸ CHOOSE STYLE</label>
+  <div class="style-grid">
     <button class="style-btn active" data-style="pixel" onclick="selectStyle(this)">
       <span class="icon">👾</span>
-      PIXEL ART
-      <span class="tag">8-bit retro</span>
+      <span class="name">PIXEL ART</span>
+      <span class="sub">16-bit retro</span>
     </button>
     <button class="style-btn" data-style="anime" onclick="selectStyle(this)">
       <span class="icon">✨</span>
-      ANIME
-      <span class="tag">japanese style</span>
+      <span class="name">ANIME</span>
+      <span class="sub">manga · cel shading</span>
     </button>
     <button class="style-btn" data-style="meme" onclick="selectStyle(this)">
       <span class="icon">😂</span>
-      MEME
-      <span class="tag">internet chaos</span>
+      <span class="name">MEME</span>
+      <span class="sub">internet humor</span>
     </button>
   </div>
 
-  <button class="generate-btn" id="genBtn" onclick="generate()">▶ GENERATE IMAGE</button>
+  <button class="gen-btn" id="genBtn" onclick="generate()">▶ GENERATE IMAGE</button>
 
-  <div class="output-area" id="output">
-    <div class="status">[ AWAITING INPUT... ]</div>
+  <div class="output" id="output">
+    <div class="status-msg">[ ENTER A PROMPT AND HIT GENERATE ]</div>
   </div>
 </div>
 
 <footer>
-  BUILT WITH ❤ USING <a href="https://pollinations.ai" target="_blank">POLLINATIONS.AI</a><br>
-  FREE • NO API KEY REQUIRED • PIXEL AESTHETIC
+  POWERED BY <a href="https://pollinations.ai" target="_blank">POLLINATIONS.AI</a> · OPEN SOURCE · FREE FOREVER
 </footer>
 
 <script>
-const STYLE_PROMPTS = {
-  pixel: "pixel art, 8-bit retro style, pixelated, low resolution pixel art, NES SNES game art, bright colors, sharp pixels",
-  anime: "anime style, Japanese animation, vibrant colors, cel shaded, detailed anime illustration, Studio Ghibli inspired, clean line art",
-  meme: "internet meme style, funny, exaggerated expression, bold impact font ready, viral meme aesthetic, humorous illustration"
-};
+  const STYLE_MODIFIERS = {
+    pixel: 'pixel art style, 16-bit, retro game',
+    anime: 'anime style, manga, cel shading, vibrant colors',
+    meme:  'meme format, internet humor, flat style'
+  };
 
-let selectedStyle = 'pixel';
-let currentImgUrl = '';
+  let selectedStyle = 'pixel';
+  let genTimeout = null;
+  let currentUrl = '';
 
-const promptEl = document.getElementById('prompt');
-const charCount = document.getElementById('charCount');
+  // Live char counter
+  const promptEl  = document.getElementById('prompt');
+  const charCountEl = document.getElementById('charCount');
 
-promptEl.addEventListener('input', () => {
-  const len = promptEl.value.length;
-  charCount.textContent = `${len} / 200`;
-  charCount.className = 'char-count' + (len > 170 ? ' warn' : '');
-});
+  promptEl.addEventListener('input', () => {
+    const n = promptEl.value.length;
+    charCountEl.textContent = `${n} / 200`;
+    charCountEl.className = 'char-count' + (n > 170 ? ' warn' : '');
+  });
 
-function selectStyle(btn) {
-  document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  selectedStyle = btn.dataset.style;
-}
-
-async function generate() {
-  const userPrompt = promptEl.value.trim();
-  if (!userPrompt) {
-    showStatus('⚠ PLEASE ENTER A PROMPT FIRST', 'error');
-    return;
+  function selectStyle(btn) {
+    document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedStyle = btn.dataset.style;
   }
 
-  const btn = document.getElementById('genBtn');
-  btn.disabled = true;
+  function setOutput(html) {
+    document.getElementById('output').innerHTML = html;
+  }
 
-  const styleTag = STYLE_PROMPTS[selectedStyle];
-  const fullPrompt = `${userPrompt}, ${styleTag}`;
-  const encoded = encodeURIComponent(fullPrompt);
-  const seed = Math.floor(Math.random() * 99999);
-  const width = 512;
-  const height = 512;
+  function generate() {
+    const userText = promptEl.value.trim();
+    if (!userText) {
+      setOutput('<div class="status-msg error">⚠ PLEASE ENTER A PROMPT FIRST</div>');
+      return;
+    }
 
-  const url = `https://image.pollinations.ai/prompt/${encoded}?width=${width}&height=${height}&seed=${seed}&nologo=true&enhance=false`;
+    // Build full prompt
+    const fullPrompt = `${userText}, ${STYLE_MODIFIERS[selectedStyle]}`;
+    const encoded    = encodeURIComponent(fullPrompt);
+    const seed       = Math.floor(Math.random() * 999999);
+    const imgUrl     = `https://image.pollinations.ai/prompt/${encoded}?width=512&height=512&nologo=true&seed=${seed}`;
+    currentUrl       = imgUrl;
 
-  currentImgUrl = url;
+    // Disable button, show loading
+    const genBtn = document.getElementById('genBtn');
+    genBtn.disabled = true;
 
-  showStatus('▓▓▒▒░░ GENERATING... PLEASE WAIT ░░▒▒▓▓', 'loading');
+    setOutput(`
+      <div class="status-msg loading">▓▒░ GENERATING IMAGE… ░▒▓</div>
+      <div class="loading-bar visible"><div class="loading-bar-inner" id="loadBar"></div></div>
+    `);
 
-  const img = new Image();
-  img.onload = () => {
-    renderImage(url, userPrompt);
-    btn.disabled = false;
-  };
-  img.onerror = () => {
-    showStatus('✖ GENERATION FAILED — CHECK CONNECTION AND RETRY', 'error');
-    btn.disabled = false;
-  };
-  img.src = url;
-}
+    // 15-second timeout guard
+    genTimeout = setTimeout(() => {
+      genBtn.disabled = false;
+      setOutput('<div class="status-msg error">✖ TIMEOUT: NO RESPONSE AFTER 15 SECONDS.<br>CHECK YOUR CONNECTION AND TRY AGAIN.</div>');
+    }, 15000);
 
-function renderImage(url, promptText) {
-  const output = document.getElementById('output');
-  output.innerHTML = `
-    <div class="img-wrapper">
-      <img src="${url}" alt="Generated image" />
-    </div>
-    <div class="img-toolbar">
-      <a href="${url}" download="pixel-gen.png" target="_blank">⬇ DOWNLOAD</a>
-      <button onclick="generate()">↺ REGENERATE</button>
-      <button onclick="copyUrl()">⎘ COPY URL</button>
-    </div>
-    <div class="prompt-used">▸ PROMPT: <span>${escHtml(promptText)}</span><br>▸ STYLE: <span>${selectedStyle.toUpperCase()}</span></div>
-  `;
-}
+    const img = new Image();
 
-function showStatus(msg, cls) {
-  document.getElementById('output').innerHTML = `<div class="status ${cls}">${msg}</div>`;
-}
+    img.onload = () => {
+      clearTimeout(genTimeout);
+      genBtn.disabled = false;
+      renderResult(imgUrl, userText);
+    };
 
-function copyUrl() {
-  navigator.clipboard.writeText(currentImgUrl).then(() => {
-    const btn = [...document.querySelectorAll('.img-toolbar button')].find(b => b.textContent.includes('COPY'));
-    if (btn) { btn.textContent = '✔ COPIED!'; setTimeout(() => btn.textContent = '⎘ COPY URL', 1500); }
-  });
-}
+    img.onerror = () => {
+      clearTimeout(genTimeout);
+      genBtn.disabled = false;
+      setOutput('<div class="status-msg error">✖ GENERATION FAILED.<br>POLLINATIONS.AI MAY BE UNAVAILABLE — RETRY IN A MOMENT.</div>');
+    };
 
-function escHtml(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
+    img.src = imgUrl;
+  }
+
+  function renderResult(imgUrl, promptText) {
+    setOutput(`
+      <div class="img-frame">
+        <img src="${imgUrl}" alt="Generated image" id="genImg" />
+      </div>
+      <div class="img-actions">
+        <button onclick="downloadImage()">⬇ DOWNLOAD PNG</button>
+        <button onclick="generate()">↺ REGENERATE</button>
+      </div>
+      <div class="prompt-info">
+        ▸ PROMPT: <span>${esc(promptText)}</span><br>
+        ▸ STYLE: <span>${selectedStyle.toUpperCase()}</span>
+      </div>
+    `);
+  }
+
+  function downloadImage() {
+    // Fetch through a canvas to force download
+    const imgEl = document.getElementById('genImg');
+    if (!imgEl) return;
+
+    fetch(imgEl.src)
+      .then(r => r.blob())
+      .then(blob => {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'generated-image.png';
+        a.click();
+        URL.revokeObjectURL(a.href);
+      })
+      .catch(() => {
+        // Fallback: open in new tab
+        window.open(imgEl.src, '_blank');
+      });
+  }
+
+  function esc(s) {
+    return s
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
 </script>
 </body>
 </html>
