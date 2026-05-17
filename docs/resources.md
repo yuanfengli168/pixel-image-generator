@@ -82,6 +82,13 @@ https://image.pollinations.ai/prompt/a%20cat%20in%20pixel%20art%20style%2C%2016-
 
 Full docs: [https://pollinations.ai/docs](https://pollinations.ai)
 
+### Rate Limits & Generation Times
+
+- **Free tier rate limit:** ~1 request per 3 seconds. Firing requests faster than this may result in delayed or failed responses.
+- **Generation time:** Typically **10–30 seconds** depending on server load. During peak hours it can stretch to 60 seconds.
+- **Timeouts:** The app waits up to **60 seconds** before showing a timeout error. If you hit it, the server is likely under heavy load — wait a few seconds and retry.
+- **No hard quota:** There is no documented daily cap, but the shared free infrastructure means throughput varies.
+
 ---
 
 ## Other Resources Used

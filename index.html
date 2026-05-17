@@ -266,7 +266,7 @@
     width: 0%;
     background: linear-gradient(90deg, var(--border), var(--accent2));
     box-shadow: 0 0 8px var(--accent2);
-    animation: loadprogress 15s linear forwards;
+    animation: loadprogress 60s linear forwards;
   }
 
   @keyframes loadprogress {
@@ -437,15 +437,15 @@
     genBtn.disabled = true;
 
     setOutput(`
-      <div class="status-msg loading">▓▒░ GENERATING IMAGE… ░▒▓</div>
+      <div class="status-msg loading">▓▒░ GENERATING… THIS MAY TAKE UP TO 60s ░▒▓</div>
       <div class="loading-bar visible"><div class="loading-bar-inner" id="loadBar"></div></div>
     `);
 
     // 15-second timeout guard
     genTimeout = setTimeout(() => {
       genBtn.disabled = false;
-      setOutput('<div class="status-msg error">✖ TIMEOUT: NO RESPONSE AFTER 15 SECONDS.<br>CHECK YOUR CONNECTION AND TRY AGAIN.</div>');
-    }, 15000);
+      setOutput('<div class="status-msg error">✖ TIMEOUT: POLLINATIONS.AI IS TAKING TOO LONG.<br>SERVER MAY BE BUSY — PLEASE WAIT A MOMENT AND TRY AGAIN.</div>');
+    }, 60000);
 
     const img = new Image();
 
@@ -458,7 +458,7 @@
     img.onerror = () => {
       clearTimeout(genTimeout);
       genBtn.disabled = false;
-      setOutput('<div class="status-msg error">✖ GENERATION FAILED.<br>POLLINATIONS.AI MAY BE UNAVAILABLE — RETRY IN A MOMENT.</div>');
+      setOutput('<div class="status-msg error">✖ GENERATION FAILED. POLLINATIONS.AI MAY BE UNDER LOAD.<br>WAIT 5-10 SECONDS AND RETRY.</div>');
     };
 
     img.src = imgUrl;
