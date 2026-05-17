@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pixel Style Image Generator</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+  :root {
+    --bg: #0a0a1a;
+    --panel: #12122a;
+    --border: #3a3aff;
+    --accent: #ff2d78;
+    --accent2: #00ffcc;
+    --text: #e0e0ff;
+    --dim: #6060aa;
+    --btn-bg: #1e1e4a;
+    --btn-hover: #3a3aff;
+    --shadow: 0 0 10px #3a3aff88;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Press Start 2P', monospace;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px 48px;
+    background-image:
+      linear-gradient(rgba(58,58,255,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(58,58,255,0.05) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 32px;
+    animation: flicker 3s infinite;
+  }
+
+  header h1 {
+    font-size: clamp(14px, 3vw, 22px);
+    color: var(--accent2);
+    text-shadow: 0 0 10px var(--accent2), 0 0 20px var(--accent2);
+    letter-spacing: 2px;
+    line-height: 1.6;
+  }
+
+  header p {
+    font-size: 8px;
+    color: var(--dim);
+    margin-top: 10px;
+    letter-spacing: 1px;
+  }
+
+  @keyframes flicker {
+    0%, 95%, 100% { opacity: 1; }
+    96% { opacity: 0.7; }
+    97% { opacity: 1; }
+    98% { opacity: 0.5; }
+    99% { opacity: 1; }
+  }
+
+  .card {
+    background: var(--panel);
+    border: 2px solid var(--border);
+    box-shadow: var(--shadow), inset 0 0 30px rgba(58,58,255,0.05);
+    border-radius: 0;
+    width: 100%;
+    max-width: 700px;
+    padding: 28px 24px;
+    position: relative;
+  }
+
+  .card::before {
+    content: '■ PIXEL GEN v1.0';
+    position: absolute;
+    top: -11px;
+    left: 16px;
+    background: var(--panel);
+    padding: 0 8px;
+    font-size: 8px;
+    color: var(--border);
+    letter-spacing: 1px;
+  }
+
+  label {
+    display: block;
+    font-size: 8px;
+    color: var(--accent2);
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+
+  textarea {
+    width: 100%;
+    background: #080820;
+    border: 2px solid var(--border);
+    color: var(--text);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    padding: 12px;
+    resize: none;
+    height: 80px;
+    outline: none;
+    line-height: 1.8;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  textarea:focus {
+    border-color: var(--accent2);
+    box-shadow: 0 0 8px var(--accent2);
+  }
+
+  .char-count {
+    font-size: 7px;
+    color: var(--dim);
+    text-align: right;
+    margin-top: 4px;
+    margin-bottom: 20px;
+  }
+
+  .char-count.warn { color: var(--accent); }
+
+  .style-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+
+  .style-btn {
+    flex: 1;
+    min-width: 120px;
+    background: var(--btn-bg);
+    border: 2px solid var(--border);
+    color: var(--dim);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    padding: 10px 6px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+    line-height: 1.8;
+    letter-spacing: 0.5px;
+  }
+
+  .style-btn:hover {
+    border-color: var(--accent2);
+    color: var(--accent2);
+    box-shadow: 0 0 8px var(--accent2);
+  }
+
+  .style-btn.active {
+    background: var(--border);
+    border-color: var(--accent2);
+    color: #fff;
+    box-shadow: 0 0 12px var(--accent2);
+  }
+
+  .style-btn .icon { display: block; font-size: 18px; margin-bottom: 6px; }
+  .style-btn .tag  { display: block; font-size: 7px; color: inherit; margin-top: 4px; opacity: 0.7; }
+
+  .generate-btn {
+    width: 100%;
+    background: var(--accent);
+    border: 2px solid #ff6aaa;
+    color: #fff;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 11px;
+    padding: 14px;
+    cursor: pointer;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.15s;
+    box-shadow: 0 4px 0 #990044, 0 0 12px var(--accent);
+    position: relative;
+    top: 0;
+  }
+
+  .generate-btn:hover:not(:disabled) {
+    background: #ff5599;
+    box-shadow: 0 4px 0 #990044, 0 0 24px var(--accent);
+    top: -2px;
+  }
+
+  .generate-btn:active:not(:disabled) {
+    top: 4px;
+    box-shadow: 0 0 0 #990044, 0 0 12px var(--accent);
+  }
+
+  .generate-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  .output-area {
+    margin-top: 28px;
+    min-height: 80px;
+  }
+
+  .status {
+    font-size: 8px;
+    text-align: center;
+    padding: 16px;
+    color: var(--dim);
+    letter-spacing: 1px;
+    line-height: 2;
+  }
+
+  .status.loading { color: var(--accent2); animation: blink 0.8s step-end infinite; }
+  .status.error   { color: var(--accent); }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .img-wrapper {
+    position: relative;
+    border: 2px solid var(--border);
+    box-shadow: var(--shadow);
+    image-rendering: pixelated;
+    background: #050510;
+    overflow: hidden;
+  }
+
+  .img-wrapper img {
+    display: block;
+    width: 100%;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+
+  .img-toolbar {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+
+  .img-toolbar a, .img-toolbar button {
+    flex: 1;
+    background: var(--btn-bg);
+    border: 2px solid var(--border);
+    color: var(--text);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    padding: 8px 4px;
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.15s;
+    letter-spacing: 0.5px;
+  }
+
+  .img-toolbar a:hover, .img-toolbar button:hover {
+    border-color: var(--accent2);
+    color: var(--accent2);
+    box-shadow: 0 0 8px var(--accent2);
+  }
+
+  .prompt-used {
+    font-size: 7px;
+    color: var(--dim);
+    margin-top: 10px;
+    line-height: 2;
+    word-break: break-word;
+  }
+
+  .prompt-used span { color: var(--accent2); }
+
+  footer {
+    margin-top: 40px;
+    font-size: 7px;
+    color: var(--dim);
+    text-align: center;
+    line-height: 2.5;
+  }
+
+  footer a { color: var(--border); text-decoration: none; }
+  footer a:hover { color: var(--accent2); }
+
+  /* Scanline overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.12) 2px,
+      rgba(0,0,0,0.12) 4px
+    );
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  /* Pixel corners */
+  .card::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; right: -2px;
+    width: 12px; height: 12px;
+    background: var(--accent);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎮 PIXEL STYLE<br>IMAGE GENERATOR</h1>
+  <p>▶ POWERED BY POLLINATIONS.AI ◀</p>
+</header>
+
+<div class="card">
+  <label for="prompt">▸ ENTER YOUR PROMPT</label>
+  <textarea id="prompt" maxlength="200" placeholder="a dragon guarding a treasure chest in a dungeon..."></textarea>
+  <div class="char-count" id="charCount">0 / 200</div>
+
+  <label>▸ SELECT STYLE</label>
+  <div class="style-row">
+    <button class="style-btn active" data-style="pixel" onclick="selectStyle(this)">
+      <span class="icon">👾</span>
+      PIXEL ART
+      <span class="tag">8-bit retro</span>
+    </button>
+    <button class="style-btn" data-style="anime" onclick="selectStyle(this)">
+      <span class="icon">✨</span>
+      ANIME
+      <span class="tag">japanese style</span>
+    </button>
+    <button class="style-btn" data-style="meme" onclick="selectStyle(this)">
+      <span class="icon">😂</span>
+      MEME
+      <span class="tag">internet chaos</span>
+    </button>
+  </div>
+
+  <button class="generate-btn" id="genBtn" onclick="generate()">▶ GENERATE IMAGE</button>
+
+  <div class="output-area" id="output">
+    <div class="status">[ AWAITING INPUT... ]</div>
+  </div>
+</div>
+
+<footer>
+  BUILT WITH ❤ USING <a href="https://pollinations.ai" target="_blank">POLLINATIONS.AI</a><br>
+  FREE • NO API KEY REQUIRED • PIXEL AESTHETIC
+</footer>
+
+<script>
+const STYLE_PROMPTS = {
+  pixel: "pixel art, 8-bit retro style, pixelated, low resolution pixel art, NES SNES game art, bright colors, sharp pixels",
+  anime: "anime style, Japanese animation, vibrant colors, cel shaded, detailed anime illustration, Studio Ghibli inspired, clean line art",
+  meme: "internet meme style, funny, exaggerated expression, bold impact font ready, viral meme aesthetic, humorous illustration"
+};
+
+let selectedStyle = 'pixel';
+let currentImgUrl = '';
+
+const promptEl = document.getElementById('prompt');
+const charCount = document.getElementById('charCount');
+
+promptEl.addEventListener('input', () => {
+  const len = promptEl.value.length;
+  charCount.textContent = `${len} / 200`;
+  charCount.className = 'char-count' + (len > 170 ? ' warn' : '');
+});
+
+function selectStyle(btn) {
+  document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedStyle = btn.dataset.style;
+}
+
+async function generate() {
+  const userPrompt = promptEl.value.trim();
+  if (!userPrompt) {
+    showStatus('⚠ PLEASE ENTER A PROMPT FIRST', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('genBtn');
+  btn.disabled = true;
+
+  const styleTag = STYLE_PROMPTS[selectedStyle];
+  const fullPrompt = `${userPrompt}, ${styleTag}`;
+  const encoded = encodeURIComponent(fullPrompt);
+  const seed = Math.floor(Math.random() * 99999);
+  const width = 512;
+  const height = 512;
+
+  const url = `https://image.pollinations.ai/prompt/${encoded}?width=${width}&height=${height}&seed=${seed}&nologo=true&enhance=false`;
+
+  currentImgUrl = url;
+
+  showStatus('▓▓▒▒░░ GENERATING... PLEASE WAIT ░░▒▒▓▓', 'loading');
+
+  const img = new Image();
+  img.onload = () => {
+    renderImage(url, userPrompt);
+    btn.disabled = false;
+  };
+  img.onerror = () => {
+    showStatus('✖ GENERATION FAILED — CHECK CONNECTION AND RETRY', 'error');
+    btn.disabled = false;
+  };
+  img.src = url;
+}
+
+function renderImage(url, promptText) {
+  const output = document.getElementById('output');
+  output.innerHTML = `
+    <div class="img-wrapper">
+      <img src="${url}" alt="Generated image" />
+    </div>
+    <div class="img-toolbar">
+      <a href="${url}" download="pixel-gen.png" target="_blank">⬇ DOWNLOAD</a>
+      <button onclick="generate()">↺ REGENERATE</button>
+      <button onclick="copyUrl()">⎘ COPY URL</button>
+    </div>
+    <div class="prompt-used">▸ PROMPT: <span>${escHtml(promptText)}</span><br>▸ STYLE: <span>${selectedStyle.toUpperCase()}</span></div>
+  `;
+}
+
+function showStatus(msg, cls) {
+  document.getElementById('output').innerHTML = `<div class="status ${cls}">${msg}</div>`;
+}
+
+function copyUrl() {
+  navigator.clipboard.writeText(currentImgUrl).then(() => {
+    const btn = [...document.querySelectorAll('.img-toolbar button')].find(b => b.textContent.includes('COPY'));
+    if (btn) { btn.textContent = '✔ COPIED!'; setTimeout(() => btn.textContent = '⎘ COPY URL', 1500); }
+  });
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
